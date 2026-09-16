@@ -1,0 +1,8 @@
+.env
+__pycache__/
+*.pyc
+.venv/
+
+# Cada pessoa gera suas próprias migrações localmente
+migrations/versions/*
+!migrations/versions/.gitkeep

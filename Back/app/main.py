@@ -2,7 +2,7 @@ from app.core.exceptions import AppException
 from fastapi import FastAPI, Request
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import auth
+from app.routers import auth, products
 
 
 app = FastAPI()
@@ -16,6 +16,7 @@ app.add_middleware(
 )
 
 app.include_router(auth.router)
+app.include_router(products.router)
 
 
 

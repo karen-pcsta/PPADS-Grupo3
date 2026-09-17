@@ -1,0 +1,8 @@
+[
+  { "name": "Mechanical Keyboard", "description": "TKL layout, Cherry MX switches.", "price": 289.90 },
+  { "name": "USB-C Hub", "description": "7-in-1 hub with 4K HDMI output.", "price": 129.00 },
+  { "name": "Monitor Stand", "description": "Adjustable aluminum stand.", "price": 74.50 },
+  { "name": "Webcam 1080p", "description": null, "price": 199.00 },
+  { "name": "Desk Mat XL", "description": "Non-slip base, 90x40cm.", "price": 45.00 },
+  { "name": "Noise-Cancelling Headphones", "description": "Bluetooth 5.2, 30h battery.", "price": 499.90 }
+]

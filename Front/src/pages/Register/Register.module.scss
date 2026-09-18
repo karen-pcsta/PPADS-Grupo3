@@ -1,0 +1,94 @@
+@use '../../styles/variables' as v;
+@use '../../styles/mixins' as m;
+
+.page {
+  min-height: 100vh;
+  background: v.$color-bg;
+  color: v.$color-text;
+  display: flex;
+}
+
+.sidebar {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: v.$sidebar-width-auth;
+  flex-shrink: 0;
+  border-right: 1px solid v.$color-border;
+  padding: 2.5rem;
+
+  @include m.respond-lg {
+    display: flex;
+  }
+}
+
+.sidebarLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-accent-light;
+}
+
+.sidebarTitle {
+  font-size: 1.875rem;
+  font-weight: 600;
+  line-height: 1.375;
+  letter-spacing: -0.025em;
+}
+
+.sidebarMuted {
+  color: v.$color-text-faint;
+}
+
+.sidebarFooter {
+  font-size: 0.75rem;
+  color: v.$color-text-faintest;
+}
+
+.formPane {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 1.5rem;
+}
+
+.formWrap {
+  width: 100%;
+  max-width: v.$form-max;
+}
+
+.formHeader {
+  margin-bottom: 2rem;
+}
+
+.formHeading {
+  font-size: 1.125rem;
+  font-weight: 600;
+}
+
+.formSubtitle {
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+  margin-top: 0.25rem;
+}
+
+.link {
+  color: v.$color-accent-light;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.submitButton {
+  width: 100%;
+  margin-top: 0.5rem;
+}

@@ -1,0 +1,276 @@
+@use '../styles/variables' as v;
+@use '../styles/mixins' as m;
+
+// Layout
+
+.layout {
+  min-height: 100vh;
+  background: v.$color-bg;
+  color: v.$color-text;
+  font-family: system-ui, sans-serif;
+}
+
+.header {
+  height: v.$header-height;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid v.$color-border-strong;
+}
+
+.brand {
+  background: v.$color-accent;
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  height: 100%;
+}
+
+.brandLink {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: v.$color-white;
+  white-space: nowrap;
+}
+
+.nav {
+  display: flex;
+  align-items: stretch;
+  height: 100%;
+  flex: 1;
+}
+
+.navLink {
+  display: flex;
+  align-items: center;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  color: v.$color-text-muted;
+  border-bottom: 2px solid transparent;
+  transition: background-color 0.15s, color 0.15s;
+
+  &:hover {
+    background: v.$color-surface;
+    color: v.$color-text;
+  }
+}
+
+.userSection {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0 1rem;
+  height: 100%;
+  border-left: 1px solid v.$color-border;
+}
+
+.username {
+  font-size: 0.875rem;
+  color: v.$color-text-muted;
+}
+
+.adminBadge {
+  font-size: 0.75rem;
+  background: v.$color-border;
+  color: v.$color-accent-light;
+  padding: 0.125rem 0.5rem;
+  font-family: monospace;
+}
+
+.signOut {
+  font-size: 0.875rem;
+  color: v.$color-accent-light;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: color 0.15s;
+
+  &:hover {
+    color: v.$color-accent;
+  }
+}
+
+.main {
+  max-width: v.$container-max;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+// StatusTag 
+
+.statusTag {
+  display: inline-block;
+  font-size: 0.75rem;
+  padding: 0.125rem 0.5rem;
+  font-family: monospace;
+}
+
+.pending {
+  background: m.alpha(v.$color-warning, 15%);
+  color: v.$color-warning;
+}
+
+.confirmed {
+  background: m.alpha(v.$color-accent, 15%);
+  color: v.$color-accent;
+}
+
+.processing {
+  background: m.alpha(v.$color-accent-mid, 15%);
+  color: v.$color-accent-mid;
+}
+
+.finalized {
+  background: m.alpha(v.$color-accent-light, 15%);
+  color: v.$color-accent-light;
+}
+
+.cancelled {
+  background: v.$color-border;
+  color: v.$color-text-faint;
+}
+
+// Button
+
+.button {
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.15s, color 0.15s, border-color 0.15s;
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}
+
+.primary {
+  background: v.$color-accent;
+  color: v.$color-white;
+
+  &:hover:not(:disabled) {
+    background: v.$color-accent-hover;
+  }
+
+  &:active:not(:disabled) {
+    background: v.$color-accent-active;
+  }
+}
+
+.secondary {
+  background: transparent;
+  color: v.$color-text-muted;
+  border: 1px solid v.$color-border;
+
+  &:hover:not(:disabled) {
+    background: v.$color-surface-hover;
+  }
+}
+
+.ghost {
+  background: transparent;
+  color: v.$color-accent-light;
+  border: 1px solid v.$color-accent;
+
+  &:hover:not(:disabled) {
+    background: m.alpha(v.$color-accent, 10%);
+  }
+}
+
+.danger {
+  background: transparent;
+  color: v.$color-danger;
+  border: 1px solid v.$color-danger;
+
+  &:hover:not(:disabled) {
+    background: m.alpha(v.$color-danger, 10%);
+  }
+}
+
+// Input
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.label {
+  font-size: 0.75rem;
+  color: v.$color-text-muted;
+}
+
+.input {
+  background: v.$color-border;
+  border: none;
+  border-bottom: 1px solid v.$color-border-strong;
+  color: v.$color-text;
+  padding: 0.625rem 1rem;
+  font-size: 0.875rem;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder {
+    color: v.$color-border-strong;
+  }
+
+  &:focus {
+    border-bottom-color: v.$color-accent;
+  }
+}
+
+.inputError {
+  border-bottom-color: v.$color-danger;
+}
+
+.errorText {
+  font-size: 0.75rem;
+  color: v.$color-danger;
+}
+
+// PageHeader 
+
+.pageHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 1.5rem;
+}
+
+.pageTitle {
+  font-size: 1.25rem;
+  font-weight: 300;
+  color: v.$color-text;
+}
+
+.pageSubtitle {
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+  margin-top: 0.25rem;
+}
+
+// EmptyState 
+
+.emptyState {
+  border: 1px dashed v.$color-border;
+  padding: 4rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.emptyMessage {
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+}
+
+// ErrorMessage 
+
+.errorMessage {
+  border-left: 4px solid v.$color-danger;
+  background: m.alpha(v.$color-danger, 10%);
+  padding: 0.75rem 1rem;
+  font-size: 0.875rem;
+  color: v.$color-danger;
+}

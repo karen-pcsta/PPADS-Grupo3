@@ -1,0 +1,159 @@
+@use '../../styles/variables' as v;
+@use '../../styles/mixins' as m;
+
+.pageError {
+  margin-bottom: 1.5rem;
+}
+
+.skeletonList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.skeletonRow {
+  height: 4rem;
+  background: v.$color-surface;
+  border: 1px solid v.$color-border;
+  @include m.skeleton-pulse;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.order {
+  border: 1px solid v.$color-border;
+  background: v.$color-surface;
+}
+
+.orderRow {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  cursor: pointer;
+  transition: background-color 0.15s;
+
+  &:hover {
+    background: v.$color-surface-hover;
+  }
+}
+
+.orderId {
+  font-family: monospace;
+  font-size: 0.75rem;
+  color: v.$color-text-faint;
+  width: 6rem;
+  flex-shrink: 0;
+}
+
+.orderDate {
+  font-size: 0.75rem;
+  color: v.$color-text-faint;
+  flex-shrink: 0;
+}
+
+.spacer {
+  flex: 1;
+}
+
+.orderTotal {
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: v.$color-accent-light;
+}
+
+.chevron {
+  font-size: 0.75rem;
+  color: v.$color-border-strong;
+}
+
+.orderDetail {
+  border-top: 1px solid v.$color-border;
+  padding: 1rem 1.25rem;
+}
+
+.table {
+  width: 100%;
+  margin-bottom: 1rem;
+  border-collapse: collapse;
+}
+
+.headRow {
+  border-bottom: 1px solid v.$color-border;
+}
+
+.thItem,
+.thQty,
+.thPrice,
+.thSubtotal {
+  font-size: 0.625rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: v.$color-text-faint;
+  font-weight: 400;
+  padding-bottom: 0.5rem;
+}
+
+.thItem {
+  text-align: left;
+}
+
+.thQty {
+  text-align: center;
+}
+
+.thPrice,
+.thSubtotal {
+  text-align: right;
+}
+
+.itemRow {
+  border-bottom: 1px solid v.$color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.cellItem {
+  padding: 0.5rem 0;
+  font-size: 0.875rem;
+}
+
+.cellQty {
+  padding: 0.5rem 0;
+  text-align: center;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+}
+
+.cellPrice {
+  padding: 0.5rem 0;
+  text-align: right;
+  font-family: monospace;
+  font-size: 0.875rem;
+  color: v.$color-text-faint;
+}
+
+.cellSubtotal {
+  padding: 0.5rem 0;
+  text-align: right;
+  font-family: monospace;
+  font-size: 0.875rem;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+}
+
+.actionButton {
+  font-size: 0.75rem;
+  padding: 0.375rem 1rem;
+}

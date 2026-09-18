@@ -1,0 +1,36 @@
+// Palette
+$color-bg: #ffffff;
+$color-surface: #ffffff;
+$color-surface-hover: #f4f4f4;
+$color-border: #cccccc;
+$color-border-strong: #9a9a9a;
+
+$color-text: #141414;
+$color-text-muted: #6b6b6b;
+$color-text-faint: #9a9a9a;
+$color-text-faintest: #b3b3b3;
+
+$color-accent: #141414;
+$color-accent-light: #141414;
+$color-accent-mid: #6b6b6b;
+$color-accent-hover: #333333;
+$color-accent-active: #000000;
+
+$color-danger: #c0392b;
+$color-danger-hover: #a5301f;
+$color-warning: #9a9a9a;
+
+$color-white: #ffffff;
+
+// Layout
+$header-height: 48px;
+$sidebar-width-auth: 420px;
+$sidebar-width-cart: 288px;
+$container-max: 72rem;
+$container-max-narrow: 42rem;
+$form-max: 24rem;
+$modal-max: 28rem;
+
+// Breakpoints
+$breakpoint-sm: 640px;
+$breakpoint-lg: 1024px;

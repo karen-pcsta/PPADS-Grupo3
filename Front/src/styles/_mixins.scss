@@ -1,0 +1,38 @@
+@use 'variables' as v;
+
+@mixin respond-sm {
+  @media (min-width: v.$breakpoint-sm) {
+    @content;
+  }
+}
+
+@mixin respond-lg {
+  @media (min-width: v.$breakpoint-lg) {
+    @content;
+  }
+}
+
+@mixin line-clamp($lines: 2) {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: $lines;
+  overflow: hidden;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@mixin skeleton-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@function alpha($color, $amount) {
+  @return color-mix(in srgb, #{$color} #{$amount}, transparent);
+}

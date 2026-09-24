@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: orders-management-backend
+    runtime: python
+    plan: free
+    rootDir: Back
+    buildCommand: pip install poetry && poetry config virtualenvs.create false && poetry install --only main --no-root
+    startCommand: alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false

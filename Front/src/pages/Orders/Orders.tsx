@@ -45,7 +45,7 @@ export default function OrdersPage() {
       await finalizeOrder(id);
       setOrders((prev) =>
         prev.map((o) =>
-          o.public_id === id ? { ...o, status: "finalized" } : o,
+          o.public_id === id ? { ...o, status: "completed" } : o,
         ),
       );
     } catch {
@@ -62,7 +62,12 @@ export default function OrdersPage() {
       await cancelOrder(id);
       setOrders((prev) =>
         prev.map((o) =>
-          o.public_id === id ? { ...o, status: "cancelled" } : o,
+          o.public_id === id
+            ? {
+                ...o,
+                status: isAdmin ? "cancelled_by_admin" : "cancelled_by_customer",
+              }
+            : o,
         ),
       );
     } catch {

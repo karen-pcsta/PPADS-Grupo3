@@ -53,13 +53,23 @@ const tagStyles: Record<string, string> = {
   processing: styles.processing,
   finalized: styles.finalized,
   cancelled: styles.cancelled,
+  completed: styles.finalized,
+  cancelled_by_customer: styles.cancelled,
+  cancelled_by_admin: styles.cancelled,
+}
+
+const tagLabels: Record<string, string> = {
+  completed: 'finalized',
+  cancelled_by_customer: 'cancelled',
+  cancelled_by_admin: 'cancelled',
 }
 
 export function StatusTag({ status }: { status: string }) {
   const style = tagStyles[status.toLowerCase()] ?? styles.cancelled
+  const label = tagLabels[status.toLowerCase()] ?? status
   return (
     <span className={`${styles.statusTag} ${style}`}>
-      {status}
+      {label}
     </span>
   )
 }

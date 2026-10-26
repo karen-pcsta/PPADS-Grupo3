@@ -47,8 +47,9 @@ def admin_token(client):
         cart = Cart(user_id = admin.id)
         db.add(cart)
         db.commit()
-        db.close()
-    
+
+    db.close()
+
     response = client.post("/auth/login", json={
         "username": "admin",
         "password": "pw123456"

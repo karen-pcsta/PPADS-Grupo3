@@ -52,9 +52,9 @@ A aplicação tem dois tipos de usuário:
 | Capacidade | Usuário comum | Admin |
 |---|---|---|
 | Navegar pelos produtos, adicionar ao carrinho e fazer pedidos | Sim | Sim |
-| Cancelar os próprios pedidos pendentes | Sim (Implementação entrega-2)| Sim (Implementação entrega-2)|
-| Criar / editar / excluir produtos | Não | Sim (Implementação entrega-2) |
-| Finalizar ou cancelar qualquer pedido | Não | Sim (Implementação entrega-2) |
+| Cancelar os próprios pedidos pendentes | Sim | Sim |
+| Criar / editar / excluir produtos | Não | Sim |
+| Finalizar ou cancelar qualquer pedido | Não | Sim |
 
 ---
 

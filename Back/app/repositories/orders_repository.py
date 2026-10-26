@@ -31,7 +31,13 @@ def create_order_with_items(db: Session, user_id: int, total: float, items: list
     
     db.query(CartItem).filter(CartItem.cart_id == cart_id).delete()
     db.flush()
-    
+
+    return order
+
+def update_order_status(db: Session, id:int, status: str):
+    order = db.query(Order).filter(Order.id == id).first()
+    order.status = status
+    db.flush()
     return order
 
 

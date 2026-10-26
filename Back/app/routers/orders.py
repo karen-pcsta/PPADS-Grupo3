@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.schemas.orders import OrderResponse
 from app.services import orders_service
-from app.core.dependencies import get_db, verify_jwt
+from app.core.dependencies import get_db, verify_admin, verify_jwt
 from typing import List
 
 router = APIRouter(prefix="/orders", tags=["orders"])
@@ -22,4 +22,14 @@ def get_all_orders(current_user = Depends(verify_jwt),db: Session = Depends(get_
 @router.get("/{public_id}", response_model = OrderResponse, status_code=200)
 def get_order(public_id: UUID, current_user = Depends(verify_jwt), db: Session = Depends(get_db)):
     return orders_service.get_order_by_public_id(db, public_id, current_user.id, current_user.role)
+
+
+@router.put("/{public_id}/complete", response_model = OrderResponse, status_code=200)
+def finalize_order(public_id: UUID, db: Session = Depends(get_db), current_user = Depends(verify_admin)):
+    return orders_service.finalize_order(db,public_id)
+
+
+@router.delete("/{public_id}", status_code=200)
+def cancel_order(public_id: UUID, db: Session = Depends(get_db), current_user = Depends(verify_jwt)):
+    return orders_service.cancel_order(db, public_id, current_user.id, current_user.role)
 

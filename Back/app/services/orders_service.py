@@ -37,3 +37,40 @@ def get_order_by_public_id(db: Session, public_id: UUID, user_id:int, user_role:
     return order
 
 
+def finalize_order(db: Session, public_id: UUID):
+    order = orders_repository.get_order_by_public_id(db,public_id)
+
+    if not order:
+       raise NotFoundException('Order not found')
+
+    if order.status != "pending":
+        raise BadRequestException('Order status is not pending')
+
+    updated_order = orders_repository.update_order_status(db, order.id, "completed")
+    db.commit()
+    db.refresh(updated_order)
+    return updated_order
+
+
+def cancel_order(db: Session, public_id: UUID, user_id:int, user_role: str):
+    order = orders_repository.get_order_by_public_id(db,public_id)
+
+    if not order:
+       raise NotFoundException('Order not found')
+
+    if order.status == "completed" or order.status.startswith("cancelled"):
+        raise BadRequestException('Cannot cancel')
+
+    if user_role == "admin":
+        new_status = "cancelled_by_admin"
+    elif order.user_id == user_id:
+        new_status = "cancelled_by_customer"
+    else:
+        raise ForbiddenException('Not authorized')
+
+    updated_order = orders_repository.update_order_status(db, order.id, new_status)
+    db.commit()
+    db.refresh(updated_order)
+    return updated_order
+
+

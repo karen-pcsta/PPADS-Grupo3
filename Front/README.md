@@ -1,8 +1,6 @@
 # Orders Management — Frontend
 
-Uma aplicação single-page para navegar por produtos, montar um carrinho e acompanhar pedidos. Construída com React, TypeScript e SCSS puro. Comunica-se com um backend de API REST rodando em `localhost:8000`.
-
-> **Escopo — Entrega 1**: esta versão cobre o fluxo principal (cadastro → login → listar produtos → montar carrinho → criar pedido → ver meus pedidos). Gestão administrativa (CRUD de produto, finalizar/cancelar pedido) e a paleta de cores final ficam para a Entrega 2.
+Uma aplicação single-page para gerenciar produtos, carrinhos e pedidos. Construída com React, TypeScript e SCSS puro. Comunica-se com um backend de API REST rodando em `localhost:8000`.
 
 ---
 
@@ -18,13 +16,13 @@ Uma aplicação single-page para navegar por produtos, montar um carrinho e acom
 - [Páginas e Funcionalidades](#páginas-e-funcionalidades)
 - [Autenticação](#autenticação)
 - [Camada de API](#camada-de-api)
-- [Escopo da Entrega 1](#escopo-da-entrega-1)
+- [Papéis (Roles)](#papéis-roles)
 
 ---
 
 ## Visão Geral
 
-Orders Management é uma aplicação de fluxo de pedidos de e-commerce. Usuários se cadastram, navegam pelos produtos, montam um carrinho de compras e acompanham seus pedidos.
+Orders Management é uma aplicação completa de fluxo de pedidos de e-commerce. Usuários podem se cadastrar, navegar pelos produtos, gerenciar um carrinho de compras e acompanhar pedidos. Administradores têm controles adicionais para criar, editar e excluir produtos, além de finalizar ou cancelar qualquer pedido.
 
 ---
 
@@ -115,7 +113,7 @@ src/
     Register/
       Register.tsx       # Formulário de criação de conta com validação no cliente
     Products/
-      Products.tsx       # Listagem de produtos com ação de adicionar ao carrinho
+      Products.tsx       # Listagem de produtos com ações de adicionar ao carrinho e CRUD de admin
       ProductDetail.tsx  # Visualização de um único produto com seletor de quantidade
     Cart/
       Cart.tsx           # Revisão do carrinho, gerenciamento de quantidade e finalização do pedido
@@ -124,9 +122,9 @@ src/
   services/
     api.ts               # Instância do Axios com interceptor de token Bearer
     auth.ts               # register, login, logout, me
-    products.ts            # getAllProducts, getProduct
+    products.ts            # Operações CRUD para produtos
     cart.ts                 # Leitura do carrinho e gerenciamento de itens
-    orders.ts               # createOrder, getAllOrders, getOrder
+    orders.ts               # Criação, consulta, finalização e cancelamento de pedidos
   styles/
     _variables.scss       # Única fonte de cor/layout
     _mixins.scss
@@ -154,7 +152,8 @@ src/
 ### `/products` — Listagem de produtos
 
 - Exibe todos os produtos em um grid responsivo.
-- Cada card tem um botão **Add to cart**, com uma breve confirmação visual ("Added").
+- Usuários comuns veem um botão **Add to cart** em cada card, com uma breve confirmação visual ("Added").
+- Administradores veem os controles **Edit** e **Delete** no lugar, além do botão **Add product**; um formulário em modal cuida tanto da criação quanto da atualização.
 - Clicar em um card de produto leva à página de detalhes.
 
 ### `/products/:id` — Detalhe do produto
@@ -174,6 +173,8 @@ src/
 
 - Lista todos os pedidos como linhas expansíveis, mostrando ID do pedido, data, status e total.
 - Expandir uma linha revela o detalhamento dos itens.
+- Usuários comuns podem cancelar seus próprios pedidos com status `pending` (pendente).
+- Administradores podem cancelar ou finalizar qualquer pedido `pending`.
 
 ---
 
@@ -185,7 +186,6 @@ A autenticação é baseada em token, usando JWT Bearer tokens.
 - A instância do Axios em [`src/services/api.ts`](src/services/api.ts) anexa automaticamente o token como um cabeçalho `Authorization: Bearer <token>` em cada requisição.
 - Ao carregar a página, o [`AuthContext`](src/context/AuthContext.tsx) lê o token do `localStorage`, chama `GET /auth/me` para restaurar a sessão do usuário, e limpa o token caso a chamada falhe (por exemplo, token expirado).
 - O componente [`PrivateRoute`](src/components/PrivateRoute.tsx) envolve todas as rotas autenticadas. O acesso não autenticado é redirecionado para `/login`.
-- O `AuthContext` já expõe um booleano `isAdmin` (derivado de `user.role`), usado hoje só para variar o subtítulo da página de pedidos — os controles administrativos que dependeriam dele chegam na Entrega 2.
 
 ---
 
@@ -196,17 +196,23 @@ Todas as funções de serviço ficam em `src/services/` e são agrupadas por dom
 | Arquivo | Endpoints utilizados |
 |---|---|
 | `auth.ts` | `POST /auth/register`, `POST /auth/login`, `GET /auth/me` |
-| `products.ts` | `GET /products`, `GET /products/:id` |
+| `products.ts` | `GET /products`, `GET /products/:id`, `POST /products`, `PUT /products/:id`, `DELETE /products/:id` |
 | `cart.ts` | `GET /cart`, `POST /cart/items`, `PUT /cart/items/:id`, `DELETE /cart/items/:id` |
-| `orders.ts` | `GET /orders`, `GET /orders/:id`, `POST /orders` |
+| `orders.ts` | `GET /orders`, `GET /orders/:id`, `POST /orders`, `PUT /orders/:id/complete`, `DELETE /orders/:id` |
 
 ---
 
-## Escopo da Entrega 1
+## Papéis (Roles)
 
-Esta entrega cobre só a funcionalidade principal: cadastro → login → listar produtos → montar carrinho → criar pedido → ver meus pedidos. Gestão administrativa fica para a Entrega 2:
+A aplicação suporta dois papéis, determinados pelo campo `role` retornado por `GET /auth/me`.
 
-- **CRUD de produtos** (criar/editar/excluir) — sem rota no backend nem UI no front nesta entrega.
-- **Finalizar / cancelar pedido** — sem rota no backend nem ações na página de pedidos nesta entrega.
+| Capacidade | Usuário comum | Admin |
+|---|---|---|
+| Navegar pelos produtos | Sim | Sim |
+| Adicionar produtos ao carrinho | Sim | Sim |
+| Fazer pedidos | Sim | Sim |
+| Cancelar próprios pedidos pendentes | Sim | Sim |
+| Criar / editar / excluir produtos | Não | Sim |
+| Finalizar ou cancelar qualquer pedido | Não | Sim |
 
-A aplicação também usa uma **paleta de cores neutra/genérica** nesta entrega.
+O booleano `isAdmin` é derivado do contexto de autenticação e fica disponível em toda a aplicação através do hook `useAuth()`.

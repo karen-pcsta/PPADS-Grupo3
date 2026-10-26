@@ -1,6 +1,6 @@
 # Orders Management API
 
-Um backend RESTful para um sistema simplificado de gerenciamento de pedidos de e-commerce, construído com **FastAPI**, **SQLAlchemy** e **PostgreSQL**. Ele cobre o fluxo principal de compras — autenticação, catálogo de produtos, gerenciamento de carrinho e criação de pedidos — com controle de acesso baseado em papéis (roles).
+Um backend RESTful para um sistema simplificado de gerenciamento de pedidos de e-commerce, construído com **FastAPI**, **SQLAlchemy** e **PostgreSQL**. Ele cobre todo o fluxo de compras — autenticação, catálogo de produtos, gerenciamento de carrinho e processamento de pedidos — com controle de acesso baseado em papéis (roles) e uma suíte de testes em três níveis.
 
 ---
 
@@ -15,6 +15,7 @@ Um backend RESTful para um sistema simplificado de gerenciamento de pedidos de e
 - [Variáveis de Ambiente](#variáveis-de-ambiente)
 - [Migrações do Banco de Dados](#migrações-do-banco-de-dados)
 - [Populando o Banco de Dados](#populando-o-banco-de-dados)
+- [Executando os Testes](#executando-os-testes)
 
 ---
 
@@ -22,11 +23,12 @@ Um backend RESTful para um sistema simplificado de gerenciamento de pedidos de e
 
 - **Autenticação JWT** — cadastro, login, logout e endpoint do usuário atual
 - **Controle de acesso baseado em papéis** — papéis `customer` (cliente) e `admin` aplicados através de dependências do FastAPI
-- **Catálogo de produtos** — listagem e detalhe de produtos (gestão administrativa do catálogo fica para uma próxima entrega)
+- **Catálogo de produtos** — CRUD completo; operações de escrita restritas a administradores
 - **Gerenciamento de carrinho** — carrinho por usuário, com operações de adicionar, atualizar e remover itens
-- **Ciclo de vida do pedido** — criação de pedido a partir do carrinho, listagem e visualização (conclusão e cancelamento ficam para uma próxima entrega)
+- **Ciclo de vida do pedido** — criação de pedido a partir do carrinho, listagem, visualização, conclusão (admin) e cancelamento
 - **Tratamento de erros estruturado** — hierarquia de exceções customizada mapeada para códigos de status HTTP
 - **Migrações com Alembic** — gerenciamento versionado de schema
+- **Suíte de testes em três níveis** — testes unitários, de integração e end-to-end
 - **Script de seed** — popula o catálogo de produtos a partir de um arquivo JSON
 
 ---
@@ -42,6 +44,7 @@ Um backend RESTful para um sistema simplificado de gerenciamento de pedidos de e
 | Migrações | Alembic 1.18 |
 | Autenticação | python-jose (JWT) + passlib / bcrypt |
 | Validação | Pydantic v2 + pydantic-settings |
+| Testes | pytest, httpx, pytest-sugar |
 | Executor de tarefas | taskipy |
 
 ---
@@ -70,6 +73,11 @@ orders_management/
 ├── scripts/
 │   ├── products.json           # Dados de produtos de exemplo
 │   └── seed_products.py        # Script de seed do banco de dados
+├── tests/
+│   ├── conftest.py             # Fixtures compartilhadas (banco de teste, usuários, produtos)
+│   ├── unit/                   # Testes unitários (ex.: funções de segurança)
+│   ├── integration/            # Testes da camada de serviço contra o banco de teste
+│   └── e2e/                    # Testes HTTP via FastAPI TestClient
 ├── alembic.ini
 ├── pyproject.toml
 └── .env                        # (não versionado) veja Variáveis de Ambiente
@@ -115,8 +123,9 @@ Todos os endpoints (exceto cadastro/login) exigem um token `Bearer` no cabeçalh
 |---|---|---|---|
 | `GET` | `/products/` | Autenticado | Lista todos os produtos |
 | `GET` | `/products/{public_id}` | Autenticado | Obtém um único produto |
-
-> Nesta entrega o catálogo é somente leitura — criação/edição/remoção de produtos (admin) ficam para uma próxima entrega. Por isso o [seed script](#populando-o-banco-de-dados) é a única forma de popular produtos por enquanto.
+| `POST` | `/products/` | Admin | Cria um produto |
+| `PUT` | `/products/{public_id}` | Admin | Atualiza um produto |
+| `DELETE` | `/products/{public_id}` | Admin | Remove um produto |
 
 ### Carrinho — `/cart`
 
@@ -134,8 +143,8 @@ Todos os endpoints (exceto cadastro/login) exigem um token `Bearer` no cabeçalh
 | `POST` | `/orders/` | Autenticado | Cria um pedido a partir do carrinho atual |
 | `GET` | `/orders/` | Autenticado | Lista pedidos (próprios pedidos; todos os pedidos para admins) |
 | `GET` | `/orders/{public_id}` | Autenticado | Obtém um pedido específico |
-
-> Nesta entrega não há como concluir (admin) ou cancelar um pedido depois de criado — essas ações ficam para uma próxima entrega.
+| `PUT` | `/orders/{public_id}/complete` | Admin | Marca um pedido como concluído |
+| `DELETE` | `/orders/{public_id}` | Autenticado | Cancela um pedido |
 
 A documentação interativa fica disponível em `http://localhost:8000/docs` assim que o servidor estiver rodando.
 
@@ -368,3 +377,31 @@ Cada objeto em `scripts/products.json` corresponde diretamente ao modelo `Produc
 psql -h localhost -U orders_app -d orders_management -c "TRUNCATE products CASCADE;"
 poetry run python scripts/seed_products.py
 ```
+
+---
+
+## Executando os Testes
+
+A suíte de testes está dividida em três níveis:
+
+```
+tests/
+├── unit/          # Testes de funções puras (ex.: hash de senha, criação de JWT)
+├── integration/   # Testes da camada de serviço — acessam diretamente o banco de teste
+└── e2e/           # Testes HTTP completos via FastAPI TestClient
+```
+
+```bash
+# Executa todos os testes
+poetry run pytest
+
+# Executa um nível específico
+poetry run pytest tests/unit
+poetry run pytest tests/integration
+poetry run pytest tests/e2e
+
+# Executa com saída detalhada
+poetry run pytest -v
+```
+
+A suíte de testes usa um banco de dados separado (`DATABASE_URL_TEST`). Cada teste de integração roda dentro de uma transação que é revertida (rollback) ao final do teste, mantendo o banco de dados limpo entre execuções.

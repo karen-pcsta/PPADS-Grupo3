@@ -16,8 +16,17 @@ async function getOrder(public_id: string): Promise<Order> {
   return response.data;
 }
 
+async function finalizeOrder(public_id: string): Promise<Order> {
+  const response = await api.put(`/orders/${public_id}/complete`);
+  return response.data;
+}
 
-export { createOrder, getAllOrders, getOrder };
+async function cancelOrder(public_id: string) {
+  await api.delete(`/orders/${public_id}`);
+}
+
+
+export { createOrder, getAllOrders, getOrder, finalizeOrder, cancelOrder };
 
 
 

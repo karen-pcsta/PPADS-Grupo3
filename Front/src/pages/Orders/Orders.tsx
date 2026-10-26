@@ -5,11 +5,14 @@ import {
   StatusTag,
   EmptyState,
   ErrorMessage,
+  Button,
 } from "../../components/UI";
 import { useAuth } from "../../context/AuthContext";
 import type { Order } from "../../types/types";
 import {
   getAllOrders,
+  finalizeOrder,
+  cancelOrder,
 } from "../../services/orders";
 import styles from "./Orders.module.scss";
 
@@ -20,6 +23,7 @@ export default function OrdersPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [expanded, setExpanded] = useState<string | null>(null);
+  const [acting, setActing] = useState<string | null>(null);
 
   useEffect(() => {
     const fetch = async () => {
@@ -35,6 +39,38 @@ export default function OrdersPage() {
     fetch();
   }, []);
 
+  const handleFinalize = async (id: string) => {
+    setActing(id);
+    try {
+      await finalizeOrder(id);
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.public_id === id ? { ...o, status: "finalized" } : o,
+        ),
+      );
+    } catch {
+      setError("Could not finalize order.");
+    } finally {
+      setActing(null);
+    }
+  };
+
+  const handleCancel = async (id: string) => {
+    if (!confirm("Cancel this order?")) return;
+    setActing(id);
+    try {
+      await cancelOrder(id);
+      setOrders((prev) =>
+        prev.map((o) =>
+          o.public_id === id ? { ...o, status: "cancelled" } : o,
+        ),
+      );
+    } catch {
+      setError("Could not cancel order.");
+    } finally {
+      setActing(null);
+    }
+  };
 
   const format = (n: number) =>
     n.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
@@ -72,6 +108,8 @@ export default function OrdersPage() {
         <div className={styles.list}>
           {orders.map((order) => {
             const isOpen = expanded === order.public_id;
+            const canAct =
+              order.status === "pending" && acting !== order.public_id;
 
             return (
               <div key={order.public_id} className={styles.order}>
@@ -125,6 +163,39 @@ export default function OrdersPage() {
                         ))}
                       </tbody>
                     </table>
+
+                    <div className={styles.actions}>
+                      {isAdmin && canAct && (
+                        <>
+                          <Button
+                            variant="danger"
+                            className={styles.actionButton}
+                            loading={acting === order.public_id}
+                            onClick={() => handleCancel(order.public_id)}
+                          >
+                            Cancel order
+                          </Button>
+                          <Button
+                            variant="primary"
+                            className={styles.actionButton}
+                            loading={acting === order.public_id}
+                            onClick={() => handleFinalize(order.public_id)}
+                          >
+                            Finalize order
+                          </Button>
+                        </>
+                      )}
+                      {!isAdmin && canAct && (
+                        <Button
+                          variant="danger"
+                          className={styles.actionButton}
+                          loading={acting === order.public_id}
+                          onClick={() => handleCancel(order.public_id)}
+                        >
+                          Cancel order
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 )}
               </div>

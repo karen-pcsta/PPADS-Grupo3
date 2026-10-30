@@ -1,7 +1,7 @@
 from uuid import UUID
 
 from sqlalchemy.orm import Session
-from app.models.models import Product
+from app.models.models import Product, OrderItem
 
 
 def get_all_products(db: Session):
@@ -33,3 +33,5 @@ def delete_product_by_id(db: Session, id:int):
     db.delete(product_to_delete)
     db.flush()
 
+def product_has_orders(db: Session, id: int):
+    return db.query(OrderItem).filter(OrderItem.product_id == id).first() is not None

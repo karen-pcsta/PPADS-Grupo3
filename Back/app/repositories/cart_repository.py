@@ -48,5 +48,6 @@ def delete_all_cart_items(db: Session, cart_id: int):
     db.query(CartItem).filter(CartItem.cart_id == cart_id).delete()
     db.flush()
 
-
-
+def delete_cart_items_by_product(db: Session, product_id: int):
+    db.query(CartItem).filter(CartItem.product_id == product_id).delete()
+    db.flush()

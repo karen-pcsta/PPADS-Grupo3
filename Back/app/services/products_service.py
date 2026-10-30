@@ -1,8 +1,8 @@
 from uuid import UUID
 
-from app.core.exceptions import NotFoundException
+from app.core.exceptions import ConflictException, NotFoundException
 from sqlalchemy.orm import Session
-from app.repositories import products_repository
+from app.repositories import products_repository, cart_repository
 from app.schemas.products import ProductCreate, ProductUpdate
 
 
@@ -46,6 +46,10 @@ def delete_product(db: Session, public_id: UUID ):
     if not product:
        raise NotFoundException('Product not found')
 
+    if products_repository.product_has_orders(db, product.id):
+        raise ConflictException('Product is part of existing orders and cannot be deleted')
+
+    cart_repository.delete_cart_items_by_product(db, product.id)
     products_repository.delete_product_by_id(db, product.id)
     db.commit()
 
